@@ -1,0 +1,28 @@
+{
+  "name": "awaf-client-builder",
+  "version": "0.0.1",
+  "description": "Builder for AWAF framework. Also it mekes the unit test for each module.",
+  "main": "index.js",
+  "scripts": {
+    "test": "./node_modules/karma/bin/karma start test-conf.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/AWAF/awaf-client-builder.git"
+  },
+  "keywords": [
+    "awaf",
+    "client",
+    "builder",
+    "framework"
+  ],
+  "author": "Ángel González",
+  "license": "GPL-2.0",
+  "bugs": {
+    "url": "https://github.com/AWAF/awaf-client-builder/issues"
+  },
+  "homepage": "https://github.com/AWAF/awaf-client-builder#readme",
+  "dependencies": {
+    "karma": "^0.13.15"
+  }
+}
