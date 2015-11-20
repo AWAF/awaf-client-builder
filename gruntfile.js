@@ -24,7 +24,7 @@ module.exports = function (grunt) {
             }
         },
         jshint: {
-            files: ['gruntfile.js', 'modules/**/*.js', 'test/**/*.js'],
+            files: ['gruntfile.js', 'modules/*/*.js', 'test/*/*.js'],
             options: {
 
             }
@@ -39,7 +39,8 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-karma');
-    grunt.loadNpmTasks('grub-contrib-concat');
+    grunt.loadNpmTasks('grunt-contrib-concat');
 
+    grunt.registerTask('tests', ['jshint', 'karma']);
     grunt.registerTask('default', ['jshint', 'karma', 'concat', 'uglify']);
 };

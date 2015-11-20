@@ -80,7 +80,7 @@ check_install (){
 git_clone (){
     for repo in $REMOTEREPOS
     do
-        git clone "https://"$REMOTEHOST"/"$REMOTEUSER"/"$repo $MODULESDIR"/"$repo;
+        git clone --recursive "https://"$REMOTEHOST"/"$REMOTEUSER"/"$repo $MODULESDIR"/"$repo;
         git_status=$?;
         if [ $git_status -ne 0 ];
         then
