@@ -1,5 +1,5 @@
 {
-  "name": "awaf-client-builder",
+  "name": "awaf",
   "version": "0.0.1",
   "description": "Builder for AWAF framework. Also it mekes the unit test for each module.",
   "main": "index.js",
@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/AWAF/awaf-client-builder#readme",
   "dependencies": {
+    "grunt": "^0.4.5",
     "karma": "^0.13.15"
   }
 }

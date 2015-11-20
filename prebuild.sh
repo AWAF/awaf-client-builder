@@ -84,10 +84,10 @@ git_clone (){
         git_status=$?;
         if [ $git_status -ne 0 ];
         then
-            echo "Cloning failed. Read the output for more information.";
-            exit 20;
+            return 10;
         fi
     done
+    return 0;
 }
 
 main (){
@@ -97,8 +97,15 @@ main (){
     then
         echo "All needed is installed. Cloning module repos...";
         git_clone;
-        echo "Prebuild completed.";
-        exit 0;
+        git_all_status=$?;
+        if [ $git_all_status -ne 0 ];
+        then
+            echo "Cloning failed. Read the output for more information.";
+            exit 20;
+        else
+            echo "All modules cloned.";
+            exit 0;
+        fi
     else
         echo "Check install failed. Read the output for more information.";
         exit 10;
