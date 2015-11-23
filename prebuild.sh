@@ -21,11 +21,11 @@ check_npm_deps (){
             return 0;
         else
             echo "Deps aren't installed. Aborting...";
-            return 20;
+            return 2;
         fi
     else
         echo "Npm in not installed. Aborting...";
-        return 10;
+        return 1;
     fi
 }
 
@@ -39,7 +39,7 @@ check_nodejs (){
         return 0;
     else
         echo "NodeJS is not installed. Aborting...";
-        return 10;
+        return 1;
     fi
 }
 
@@ -53,7 +53,7 @@ check_git (){
         return 0;
     else
         echo "Git is not installed. Aborting...";
-        return 10;
+        return 1;
     fi
 }
 
@@ -70,10 +70,10 @@ check_install (){
         then
             return 0;
         else
-            return 20;
+            return 2;
         fi
     else
-        return 10;
+        return 1;
     fi
 }
 
@@ -84,32 +84,117 @@ git_clone (){
         git_status=$?;
         if [ $git_status -ne 0 ];
         then
-            return 10;
+            return 1;
         fi
     done
     return 0;
 }
 
+git_pull (){
+    for repo in $REMOTEREPOS
+    do
+        cd $MODULESDIR"/"$repo;
+        git pull;
+        cd .."/"..;
+    done
+    return 0;
+}
+
+git_checkout (){
+    for repo in $REMOTEREPOS
+    do
+        cd $MODULESDIR"/"$repo;
+        git checkout $arg2;
+        git_status=$?;
+        if [ $git_status -ne 0 ];
+        then
+            return 1;
+        fi
+        cd .."/"..;
+    done
+    return 0;
+}
+
+## prebuild.sh
+## Arguments: prebuild.sh [to <version>] | [update [<version>]] | [help]
 main (){
     check_install;
     check_status=$?;
     if [ $check_status -eq 0 ];
     then
-        echo "All needed is installed. Cloning module repos...";
-        git_clone;
-        git_all_status=$?;
-        if [ $git_all_status -ne 0 ];
-        then
-            echo "Cloning failed. Read the output for more information.";
-            exit 20;
-        else
-            echo "All modules cloned.";
-            exit 0;
-        fi
+        echo "All needed is installed.";
+        case $arg1 in
+            to)
+            if [ -z $arg2 ];
+            then
+                echo "Failed. \"to\" needs 1 extra argument (version)";
+                exit 129;
+            else
+                echo "Cloning module repos...";
+                git_clone;
+                clone_ret_value=$?;
+                if [ $clone_ret_value -ne 0 ];
+                then
+                    echo "Cloning failed. Read the output for more information.";
+                    exit 131;
+                else
+                    echo "All modules cloned. Checkout version...";
+                    git_checkout;
+                    checkout_ret_value=$?;
+                    if [ $checkout_ret_value -ne 0 ];
+                    then
+                        echo "Checkout failed. Read the output for more information.";
+                        exit 132;
+                    else
+                        echo "All repositories set to version $2.";
+                        exit 0;
+                    fi
+                fi
+            fi
+            ;;
+            update)
+            if [ -z $arg2 ];
+            then
+                arg2="HEAD";
+            fi
+            git_pull;
+            git_checkout;
+            checkout_ret_value=$?;
+            if [ $checkout_ret_value -ne 0 ];
+            then
+                echo "Checkout failed. Read the output for more information.";
+                exit 132;
+            else
+                echo "All repositories set to version $arg2.";
+                exit 0;
+            fi
+            ;;
+            help)
+                echo "prebuild.sh [to <version>] | [update [<version]] | [help]";
+                exit 1;
+            ;;
+            *)
+            echo "Cloning module repos...";
+            git_clone;
+            clone_ret_value=$?;
+            if [ $clone_ret_value -ne 0 ];
+            then
+                echo "Cloning failed. Read the output for more information.";
+                exit 131;
+            else
+                echo "All modules cloned.";
+                exit 0;
+            fi
+            ;;
+        esac
     else
         echo "Check install failed. Read the output for more information.";
-        exit 10;
+        exit 130;
     fi
 }
 
+
+echo "Args: $@";
+arg1=$1;
+arg2=$2;
 main;
