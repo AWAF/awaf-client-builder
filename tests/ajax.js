@@ -14,17 +14,17 @@ describe("Ajax module simplifies AJAX requests", function () {
     });
 
     it("should make an AJAX request to an valid URL and send a success callback", function () {
-        var doneFn = jasmine.createSpy("success");
-        var errorFn = jasmine.createSpy("error");
+        var doneFn = jasmine.createSpy("success"),
+            errorFn = jasmine.createSpy("error");
 
         ajax.request({
             method: 'Get',
             url: '/test/ok.html',
             success: function (response) {
-                doneFn(response);
+                doneFn(response.responseText);
             },
-            error: function () {
-                errorFn();
+            error: function (status) {
+                errorFn(status);
             }
         });
         expect(jasmine.Ajax.requests.mostRecent().url).toBe('/test/ok.html');
@@ -34,26 +34,26 @@ describe("Ajax module simplifies AJAX requests", function () {
         jasmine.Ajax.requests.mostRecent().respondWith({
             "status": 200,
             "contentType": 'text/plain',
-            "response": 'Test OK'
+            "responseText": 'Test OK'
         });
 
         expect(doneFn).toHaveBeenCalledWith('Test OK');
     });
     it("should send an error when it sends a non valid URL", function () {
-        var doneFn = jasmine.createSpy("success");
-        var errorFn = jasmine.createSpy("error");
+        var doneFn = jasmine.createSpy("success"),
+            errorFn = jasmine.createSpy("error");
 
         ajax.request({
             method: 'Get',
             success: function (response) {
                 doneFn(response);
             },
-            error: function () {
-                errorFn();
+            error: function (status) {
+                errorFn(status);
             }
         });
         expect(jasmine.Ajax.requests.mostRecent().url).isUndefined;
         expect(doneFn).not.toHaveBeenCalled();
-        expect(errorFn).toHaveBeenCalled();
+        expect(errorFn).toHaveBeenCalledWith(-2);
     });
 });

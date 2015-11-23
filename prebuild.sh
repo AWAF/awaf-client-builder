@@ -146,7 +146,7 @@ main (){
                         echo "Checkout failed. Read the output for more information.";
                         exit 132;
                     else
-                        echo "All repositories set to version $2.";
+                        echo "All repositories set to version $arg2.";
                         exit 0;
                     fi
                 fi
