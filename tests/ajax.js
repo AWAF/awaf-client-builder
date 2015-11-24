@@ -46,7 +46,7 @@ describe("Ajax module simplifies AJAX requests", function () {
         ajax.request({
             method: 'Get',
             success: function (response) {
-                doneFn(response);
+                doneFn(response.responseText);
             },
             error: function (status) {
                 errorFn(status);
